@@ -10,6 +10,9 @@ def emotion_detector(text):
         response = requests.post(url, json = myobj, headers=header) 
         if response.status_code!=200:
             return "Error"
-        return response.text
-    except:
-        return "Error"
+        formatted_response = json.loads(response.text)
+        emotions = formatted_response['emotionPredictions'][0]['emotion']
+        emotions['dominant_emotion'] = max(emotions, key=emotions.get)        
+        return emotions
+    except Exception as e:
+        return str(e)
